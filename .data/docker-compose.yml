@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  nodechat-db:
+    image: nodechat-db
+    container_name: nodechat-db
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=dbpassword
+      - POSTGRES_DB=nodechatdb
+    volumes:
+      - "nodechatdb-data:/var/lib/postgresql/data"
+      
+volumes:
+  nodechatdb-data:
+networks:
+  nodechatbe:
+    driver: bridge
+    name: nodechatbe
+  # https://docs.confluent.io/5.5.0/connect/debezium-connect-postgres/index.html#enable-logical-decoding
+  # follow these instructions to enable WAL on the postgres server in order to make the calls to establish the
+  # kafka connector to work properly 
