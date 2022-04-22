@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { LoginModel } from './login.model';
-import { v4 as uuidv4 } from 'uuid';
+import { GetOrCreateActiveSessionByUserId } from '../../domain/repositories/usersession.repository';
 import { GetByLoginId } from '../../domain/repositories/user.repository';
 import { User } from 'src/domain/entities/user.domain.entity';
 
@@ -19,7 +19,7 @@ loginRouter.post('/', async (req: Request, res: Response) => {
 		res.status(404).send('The user specified could not found.');
 		return;
 	}
-	// todo: scaffold - check the UserSessions table in the datastore and get or create an active session id
-	const newId: string = uuidv4();
-	res.status(200).send(newId);
+	
+	const sessionId: string = await GetOrCreateActiveSessionByUserId(user.id);
+	res.status(200).send(sessionId);
 });

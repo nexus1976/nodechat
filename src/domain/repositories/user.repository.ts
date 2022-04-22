@@ -25,3 +25,16 @@ export const GetByLoginId = async (loginId: string): Promise<null | User> => {
 	};
 	return user;
 };
+
+export const UserExists = async (userId: string): Promise<boolean> => {
+	const query: string = `SELECT EXISTS(SELECT 1 FROM "public"."Users" u WHERE "u"."id" = '${userId}') AS "exists"`
+	const client: Client = CreateNewClient();
+	client.connect();
+	const result = await client.query(query);
+	client.end;
+	if (!result || !result.rows || !(result.rows.length > 0)) {
+		return false;
+	}
+	const exists = result.rows[0] as boolean;
+	return exists;
+}
