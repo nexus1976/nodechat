@@ -6,7 +6,9 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { loginRouter } from './controllers/logincontroller/login.router';
+import { LoginRouter } from './controllers/logincontroller/login.router';
+import { LogoutRouter } from './controllers/logoutcontroller/logout.router';
+import { MessageRouter } from './controllers/messagecontroller/message.router';
 
 dotenv.config();
 
@@ -27,7 +29,9 @@ const app = express();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-app.use('/api/login', loginRouter);
+app.use('/api/login', LoginRouter);
+app.use('/api/logout', LogoutRouter);
+app.use('/api/messages', MessageRouter);
 
 /**
  * Server Activation

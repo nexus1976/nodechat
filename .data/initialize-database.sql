@@ -9,46 +9,68 @@ START TRANSACTION;
 DO $$
 BEGIN
 	IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = 'InitialMigration') THEN
-    CREATE TABLE "Users" (
-        id uuid NOT NULL,
-        firstname character varying(100) NOT NULL,
-        lastname character varying(100) NOT NULL,
-        email character varying(256) NULL,
-        mobilephone character varying(10) NULL,
-        loginid character varying(256) NOT NULL,
-        passwordhash character varying(128) NULL,
-        salt character varying(16) NOT NULL,
-        isdeactivated boolean NOT NULL DEFAULT FALSE,
-        CONSTRAINT "PK_Users" PRIMARY KEY (id)
-    );
+        CREATE TABLE "Users" (
+            id uuid NOT NULL,
+            firstname character varying(100) NOT NULL,
+            lastname character varying(100) NOT NULL,
+            email character varying(256) NULL,
+            mobilephone character varying(10) NULL,
+            loginid character varying(256) NOT NULL,
+            passwordhash character varying(128) NULL,
+            salt character varying(16) NOT NULL,
+            isdeactivated boolean NOT NULL DEFAULT FALSE,
+            CONSTRAINT "PK_Users" PRIMARY KEY (id)
+        );
 	END IF;
 END $$;
 
 DO $$
 BEGIN
 	IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = 'InitialMigration') THEN
-    CREATE TABLE "UserSessions" (
-        id uuid NOT NULL,
-		userid uuid NOT NULL,
-		isactive boolean NOT NULL DEFAULT TRUE,
-        CONSTRAINT "PK_UserSessions" PRIMARY KEY (id)
-    );
+        CREATE TABLE "UserSessions" (
+            id uuid NOT NULL,
+            userid uuid NOT NULL,
+            isactive boolean NOT NULL DEFAULT TRUE,
+            CONSTRAINT "PK_UserSessions" PRIMARY KEY (id),
+            CONSTRAINT "FK_UserSessions_User_userid" FOREIGN KEY (userid) REFERENCES "Users" (id) ON DELETE RESTRICT
+        );
+	END IF;
+END $$;
+
+DO $$
+BEGIN
+	IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = 'InitialMigration') THEN
+        CREATE TABLE "Messages" (
+            id uuid NOT NULL,
+            userid uuid NOT NULL,
+            messagedate timestamp without time zone NOT NULL DEFAULT (timezone('utc'::text, now())),
+            messagetext character varying NOT NULL,
+            CONSTRAINT "PK_Messages" PRIMARY KEY (id),
+            CONSTRAINT "FK_Messages_User_userid" FOREIGN KEY (userid) REFERENCES "Users" (id) ON DELETE RESTRICT
+        );
+	END IF;
+END $$;
+
+DO $$
+BEGIN
+	IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = 'InitialMigration') THEN
+        CREATE INDEX "IX_Messages_messagedate" ON "Messages" (messagedate);
 	END IF;
 END $$;
 
 DO $$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = 'InitialMigration') THEN
-    INSERT INTO "Users" ("id", "firstname", "lastname", "loginid", "passwordhash", "salt")
-    VALUES ('0922c344-00da-4eec-ae01-40ee7d827724', 'Daniel', 'Graham', 'dgraham', 'password123', 'password123');
+        INSERT INTO "Users" ("id", "firstname", "lastname", "loginid", "passwordhash", "salt")
+        VALUES ('0922c344-00da-4eec-ae01-40ee7d827724', 'Daniel', 'Graham', 'dgraham', 'password123', 'password123');
     END IF;
 END $$;
 
 DO $$
 BEGIN
     IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = 'InitialMigration') THEN
-    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-    VALUES ('InitialMigration', '1.0.0');
+        INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+        VALUES ('InitialMigration', '1.0.0');
     END IF;
 END $$;
 COMMIT;

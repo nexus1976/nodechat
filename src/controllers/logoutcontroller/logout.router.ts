@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
-import { UserExists } from '../../domain/repositories/user.repository';
-import { DeleteActiveSessionByUserId } from '../../domain/repositories/usersession.repository';
+import { UserExists } from '../../domain/repositories/user.domain.repository';
+import { DeleteActiveSessionByUserId } from '../../domain/repositories/usersession.domain.repository';
 import { validate as uuidValidate } from 'uuid';
 
 export const LogoutRouter = express.Router();
