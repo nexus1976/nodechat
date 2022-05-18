@@ -9,6 +9,7 @@ import helmet from 'helmet';
 import { LoginRouter } from './controllers/logincontroller/login.router';
 import { LogoutRouter } from './controllers/logoutcontroller/logout.router';
 import { MessageRouter } from './controllers/messagecontroller/message.router';
+import { UserRouter } from './controllers/usercontroller/user.router';
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.use(express.json());
 app.use('/api/login', LoginRouter);
 app.use('/api/logout', LogoutRouter);
 app.use('/api/messages', MessageRouter);
+app.use('/api/users', UserRouter);
 
 /**
  * Server Activation

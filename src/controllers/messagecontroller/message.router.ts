@@ -2,11 +2,12 @@ import express, { Request, Response } from 'express';
 import { IsValidUUID } from '../../domain/services/uuid-utilities.domain.service';
 import { MessageModel } from './message.model';
 import { Message } from '../../domain/entities/message.domain.entity';
-import { CreateMessage } from '../../domain/repositories/message.domain.repository';
+import { CreateMessage, GetMessages } from '../../domain/repositories/message.domain.repository';
+import { MapDomainToModels } from './message.mapping.service';
 
 export const MessageRouter = express.Router();
 
-// POST messages/:MessageModel
+// POST /messages/:MessageModel
 MessageRouter.post('/', async (req: Request, res: Response) => {
 	const model: MessageModel = req.body;
 	if (model == undefined || model == null || !model.messagetext || model.messagetext.trim().length === 0 || !IsValidUUID(model.userid)) {
@@ -27,4 +28,15 @@ MessageRouter.post('/', async (req: Request, res: Response) => {
 		return;
 	}
 	res.status(200).send(response);
+});
+
+// GET /messages
+MessageRouter.get('/',async (req: Request, res: Response) => {
+	const messages = await GetMessages();
+	if (messages && messages.length && messages.length > 0) {
+		const response: Array<MessageModel> = MapDomainToModels(messages);
+		res.status(200).send(response);
+	} else {
+		res.status(200).send(null);
+	}
 });
