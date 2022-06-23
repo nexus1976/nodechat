@@ -1,0 +1,114 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"description": "This is a simple NodeJS API code golf project to demonstrate NodeJS, Typescript, and OpenAPI.",
+		"version": "1.0.0",
+		"title": "NodeChat"
+	},
+	"schemes": ["http"],
+	"host": "localhost:3000",
+	"basePath": "/",
+	"paths": {
+		"/users": {
+			"get": {
+				"summary": "Get all Users",
+				"description": "Get all Users",
+				"produces": ["application/json"],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/UsersModel"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/users/{id}": {
+			"get": {
+				"summary": "Get Users By Id",
+				"description": "Get Users By Id",
+				"produces": ["application/json"],
+				"parameters": [{
+					"name": "id",
+					"in": "path",
+					"description": "id of user to return",
+					"required": true,
+					"type": "string"
+				}],
+				"responses": {
+					"200": {
+						"description": "successful operation",
+						"schema": {
+							"type": "object",
+							"$ref": "#/definitions/UsersModel"
+						}
+					},
+					"400": {
+						"description": "Invalid status value",
+						"schema": {
+							"$ref": "#/definitions/InvalidResponse"
+						}
+					},
+					"404": {
+						"description": "Not found status",
+						"schema": {
+							"$ref": "#/definitions/NotFoundResponse"
+						}
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"UsersModel": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"firstname": {
+					"type": "string"
+				},
+				"lastname": {
+					"type": "string"
+				},
+				"email": {
+					"type": "string"
+				},
+				"mobilephone": {
+					"type": "string"
+				},
+				"loginid": {
+					"type": "string"
+				}				
+			}
+		},
+		"InvalidResponse": {
+			"type": "object",
+            "properties": {
+				"statusCode": {
+					"type": "string"
+				},
+				"message": {
+					"type": "string"
+				}
+			}
+		},
+		"NotFoundResponse": {
+			"type": "object",
+			"properties": {
+				"statusCode": {
+					"type": "string"
+				},
+				"message": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

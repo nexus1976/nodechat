@@ -8,7 +8,7 @@ import { MapDomainToModel } from './user.mapping.service';
 export const UserRouter = express.Router();
 
 UserRouter.get('/:id', async (req: Request, res: Response) => {
-	const userId = req.params.userId;
+	const userId = req.params.id;
 	const userIdValid: boolean = IsValidUUID(userId);
 	
 	if (!userIdValid) {
@@ -18,10 +18,12 @@ UserRouter.get('/:id', async (req: Request, res: Response) => {
 	const userExists = await UserExists(userId);
 	if (!userExists) {
 		res.status(404).send("The userId specified was not found.");
+		return;
 	}
 	const user: User | null = await GetById(userId);
 	if (!user) {
 		res.status(404).send("The userId specified was not found.");
+		return;
 	}
 	const response: UserModel | null = MapDomainToModel(user);
 	res.status(200).send(response);
@@ -29,5 +31,12 @@ UserRouter.get('/:id', async (req: Request, res: Response) => {
 
 UserRouter.get('/', async (req: Request, res: Response) => {
 	const users: Array<User> = await GetAll();
-	res.status(200).send(users);
+	const response: Array<UserModel> = [];
+	users.forEach(u => {
+		const userModel: UserModel | null = MapDomainToModel(u);
+		if (userModel !== null) {
+			response.push(userModel);
+		}
+	});
+	res.status(200).send(response);
 });
