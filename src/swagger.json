@@ -17,11 +17,11 @@
 				"parameters": [],
 				"responses": {
 					"200": {
-						"description": "successful operation",
+						"description": "OK",
 						"schema": {
 							"type": "array",
 							"items": {
-								"$ref": "#/definitions/UsersModel"
+								"$ref": "#/definitions/UserModel"
 							}
 						}
 					}
@@ -42,30 +42,85 @@
 				}],
 				"responses": {
 					"200": {
-						"description": "successful operation",
+						"description": "OK",
 						"schema": {
 							"type": "object",
-							"$ref": "#/definitions/UsersModel"
+							"$ref": "#/definitions/UserModel"
 						}
 					},
 					"400": {
-						"description": "Invalid status value",
+						"description": "Bad Request",
 						"schema": {
-							"$ref": "#/definitions/InvalidResponse"
+							"$ref": "#/definitions/GeneralInvalidResponse"
 						}
 					},
 					"404": {
-						"description": "Not found status",
+						"description": "Not Found",
 						"schema": {
-							"$ref": "#/definitions/NotFoundResponse"
+							"$ref": "#/definitions/GeneralInvalidResponse"
 						}
 					}
+				}
+			}
+		},
+		"/messages": {
+			"get": {
+				"summary":"Get all Messages",
+				"description": "Get all Messages",
+				"produces": ["application/json"],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/MessageModel"
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"summary": "Create new Message",
+				"description": "Create new Message",
+				"produces": ["application/json"],
+				"parameters": [{
+					"name": "body",
+					"in": "body",
+					"description": "Message model",
+					"required": true,
+					"schema": {
+						"type": "object",
+						"$ref": "#/definitions/MessageModel"
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"schema": {
+							"type": "object",
+							"$ref": "#/definitions/MessageModel"
+						}
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/GeneralInvalidResponse"
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"schema": {
+							"$ref": "#/definitions/GeneralInvalidResponse"
+						}
+					}										
 				}
 			}
 		}
 	},
 	"definitions": {
-		"UsersModel": {
+		"UserModel": {
 			"type": "object",
 			"properties": {
 				"id": {
@@ -88,7 +143,28 @@
 				}				
 			}
 		},
-		"InvalidResponse": {
+		"MessageModel": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string",
+					"nullable": true
+				},
+				"userid": {
+					"type": "string",
+					"nullable": true
+				},
+				"messagedate": {
+					"type": "string",
+					"nullable": true
+				},
+				"messagetext": {
+					"type": "string",
+					"nullable": true
+				}				
+			}
+		},		
+		"GeneralInvalidResponse": {
 			"type": "object",
             "properties": {
 				"statusCode": {
@@ -98,17 +174,6 @@
 					"type": "string"
 				}
 			}
-		},
-		"NotFoundResponse": {
-			"type": "object",
-			"properties": {
-				"statusCode": {
-					"type": "string"
-				},
-				"message": {
-					"type": "string"
-				}
-			}
-		}
+		}		
 	}
 }
