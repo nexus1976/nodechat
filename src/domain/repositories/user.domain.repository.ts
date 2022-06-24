@@ -3,12 +3,12 @@ import { Client, QueryResult } from 'pg';
 import { IsValidUUID } from '../services/uuid-utilities.domain.service';
 import { User } from '../entities/user.domain.entity';
 
-export const GetByLoginId = async (loginId: string): Promise<null | User> => {
+export const GetByLoginId = async (loginId: string, passwordhash: string): Promise<null | User | boolean> => {
 	if (loginId === undefined || loginId === null || loginId.trim().length === 0) {
 		return null;
 	}
 	const client: Client = CreateNewClient();
-	const query = 'SELECT * FROM "public"."Users" u WHERE "u"."loginid" = $1';
+	const query = 'SELECT * FROM "public"."Users" u WHERE "u"."loginid" = $1 AND "u"."isdeactivated"=false;';
 	
 	client.connect();
 	const result = await client.query(query, [loginId]);
@@ -17,16 +17,22 @@ export const GetByLoginId = async (loginId: string): Promise<null | User> => {
 		return null;
 	}
 	const element = result.rows[0];
-	const user: User = {
-		id: element.id,
-		email: element.email,
-		firstname: element.firstname,
-		lastname: element.lastname,
-		loginid: element.loginid,
-		mobilephone: element.mobilephone,
-		passwordhash: element.passwordhash,
-		salt: element.salt
-	};
+
+	if (element.passwordhash) {
+		if (element.passwordhash !== passwordhash) {
+			return false;
+		}
+	}
+	const user: User = new User(
+		element.id,
+		element.firstname,
+		element.lastname,
+		element.email,
+		element.mobilephone,
+		element.loginid,
+		element.passwordhash,
+		element.salt
+	);
 	return user;
 };
 
@@ -44,16 +50,16 @@ export const GetById = async (userId: string): Promise<null | User> => {
 		return null;
 	}
 	const element = result.rows[0];
-	const user: User = {
-		id: element.id as string,
-		email: element.email as string,
-		firstname: element.firstname as string,
-		lastname: element.lastname as string,
-		loginid: element.loginid as string,
-		mobilephone: element.mobilephone as string,
-		passwordhash: element.passwordhash as string,
-		salt: element.salt as string
-	};
+	const user: User = new User(
+		element.id,
+		element.firstname,
+		element.lastname,
+		element.email,
+		element.mobilephone,
+		element.loginid,
+		element.passwordhash,
+		element.salt
+	);
 	return user;
 };
 
@@ -66,16 +72,16 @@ export const GetAll = async (): Promise<Array<User>> => {
 	const users: Array<User> = new Array<User>();
 	if (result && result.rows && (result.rows.length > 0)) {
 		result.rows.forEach(element => {
-			const user: User = {
-				id: element.id as string,
-				email: element.email as string,
-				firstname: element.firstname as string,
-				lastname: element.lastname as string,
-				loginid: element.loginid as string,
-				mobilephone: element.mobilephone as string,
-				passwordhash: element.passwordhash as string,
-				salt: element.salt as string	
-			};
+			const user: User = new User(
+				element.id,
+				element.firstname,
+				element.lastname,
+				element.email,
+				element.mobilephone,
+				element.loginid,
+				element.passwordhash,
+				element.salt
+			);
 			users.push(user);
 		});
 	}

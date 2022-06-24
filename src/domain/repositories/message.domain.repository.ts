@@ -34,12 +34,7 @@ export const GetMessages = async (): Promise<Array<Message>> => {
 	const messages: Array<Message> = new Array<Message>();
 	if (result && result.rows && (result.rows.length > 0)) {
 		result.rows.forEach(element => {
-			const message: Message = {
-				id: element.id as string,
-				userid: element.userid as string,
-				messagedate: element.messagedate as Date,
-				messagetext: element.messagetext as string
-			};
+			const message: Message = new Message(element.id as string, element.userid as string, element.messagedate as Date, element.messagetext as string);
 			messages.push(message);
 		});
 	}

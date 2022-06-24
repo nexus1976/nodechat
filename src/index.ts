@@ -4,12 +4,12 @@ import * as dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import fs from 'fs';
 import * as swaggerUi from 'swagger-ui-express';
 import { LoginRouter } from './controllers/logincontroller/login.router';
 import { LogoutRouter } from './controllers/logoutcontroller/logout.router';
 import { MessageRouter } from './controllers/messagecontroller/message.router';
 import { UserRouter } from './controllers/usercontroller/user.router';
-import fs from 'fs';
 
 dotenv.config();
 
@@ -33,7 +33,10 @@ app.use('/users', UserRouter);
 const swaggerFile: any = (process.cwd() + "/src/swagger.json");
 const swaggerData: any = fs.readFileSync(swaggerFile, 'utf-8');
 const swaggerDocument = JSON.parse(swaggerData);
-app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+const swaggerOptions: swaggerUi.SwaggerUiOptions = {
+	explorer: false
+};
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerOptions));
 
 /** Server Activation */
 app.listen(PORT, () => {

@@ -4,10 +4,11 @@ import { UserExists, GetById, GetAll } from '../../domain/repositories/user.doma
 import { UserModel } from './user.model';
 import { User } from '../../domain/entities/user.domain.entity';
 import { MapDomainToModel } from './user.mapping.service';
+import { AuthenticationMiddleware } from '../../domain/services/token.domain.service';
 
 export const UserRouter = express.Router();
 
-UserRouter.get('/:id', async (req: Request, res: Response) => {
+UserRouter.get('/:id', AuthenticationMiddleware, async (req: Request, res: Response) => {
 	const userId = req.params.id;
 	const userIdValid: boolean = IsValidUUID(userId);
 	
@@ -29,7 +30,7 @@ UserRouter.get('/:id', async (req: Request, res: Response) => {
 	res.status(200).send(response);
 });
 
-UserRouter.get('/', async (req: Request, res: Response) => {
+UserRouter.get('/', AuthenticationMiddleware, async (req: Request, res: Response) => {
 	const users: Array<User> = await GetAll();
 	const response: Array<UserModel> = [];
 	users.forEach(u => {

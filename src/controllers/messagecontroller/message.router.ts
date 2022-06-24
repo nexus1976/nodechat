@@ -4,11 +4,12 @@ import { MessageModel } from './message.model';
 import { Message } from '../../domain/entities/message.domain.entity';
 import { CreateMessage, GetMessages } from '../../domain/repositories/message.domain.repository';
 import { MapDomainToModels } from './message.mapping.service';
+import { AuthenticationMiddleware } from '../../domain/services/token.domain.service';
 
 export const MessageRouter = express.Router();
 
 // POST /messages/:MessageModel
-MessageRouter.post('/', async (req: Request, res: Response) => {
+MessageRouter.post('/', AuthenticationMiddleware, async (req: Request, res: Response) => {
 	const model: MessageModel = req.body;
 	if (model == undefined || model == null || !model.messagetext || model.messagetext.trim().length === 0 || !IsValidUUID(model.userid)) {
 		res.status(400).send('The model was not valid. A proper message model with messagetext and a valid userid is expected.');
@@ -31,7 +32,7 @@ MessageRouter.post('/', async (req: Request, res: Response) => {
 });
 
 // GET /messages
-MessageRouter.get('/',async (req: Request, res: Response) => {
+MessageRouter.get('/', AuthenticationMiddleware, async (req: Request, res: Response) => {
 	const messages = await GetMessages();
 	if (messages && messages.length && messages.length > 0) {
 		const response: Array<MessageModel> = MapDomainToModels(messages);
