@@ -228,18 +228,18 @@
 			}
 		},
 		"/login": {
+			"parameters": [{
+				"name": "body",
+				"in": "body",
+				"description": "Login model",
+				"required": true,
+				"schema": {
+					"type": "object",
+					"$ref": "#/components/schemas/LoginModel"
+				}
+			}],
 			"post": {
 				"description": "Authenticate With Service",
-				"parameters": [{
-					"name": "body",
-					"in": "body",
-					"description": "Login model",
-					"required": true,
-					"schema": {
-						"type": "object",
-						"$ref": "#/components/schemas/LoginModel"
-					}
-				}],
 				"responses": {
 					"201": {
 						"description": "Created",
