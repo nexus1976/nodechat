@@ -88,12 +88,12 @@
 	}],
 	"paths": {
 		"/users": {
-			"parameters": [],
 			"get": {
 				"description": "Get all Users",
-				"security": {
+				"summary": "Get all Users",
+				"security": [{
 					"bearerAuth": []
-				},
+				}],
 				"responses": {
 					"200": {
 						"description": "OK",
@@ -121,9 +121,10 @@
 			}],			
 			"get": {
 				"description": "Get Users By Id",
-				"security": {
+				"summary": "Get Users By Id",
+				"security": [{
 					"bearerAuth": []
-				},
+				}],
 				"responses": {
 					"200": {
 						"description": "OK",
@@ -160,9 +161,12 @@
 			}
 		},
 		"/messages": {
-			"parameters": [],
 			"get": {
+				"security": [{
+					"bearerAuth": []
+				}],
 				"description": "Get all Messages",
+				"summary": "Get all Messages",
 				"responses": {
 					"200": {
 						"description": "OK",
@@ -180,17 +184,23 @@
 				}
 			},
 			"post": {
+				"security": [{
+					"bearerAuth": []
+				}],
 				"description": "Create new Message",
-				"parameters": [{
-					"name": "body",
-					"in": "body",
+				"summary": "Create new Message",
+				"requestBody": {
 					"description": "Message model",
 					"required": true,
-					"schema": {
-						"type": "object",
-						"$ref": "#/components/schemas/MessageModel"
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"$ref": "#/components/schemas/MessageModel"
+							}
+						}
 					}
-				}],
+				},
 				"responses": {
 					"200": {
 						"description": "OK",
@@ -228,18 +238,21 @@
 			}
 		},
 		"/login": {
-			"parameters": [{
-				"name": "body",
-				"in": "body",
-				"description": "Login model",
-				"required": true,
-				"schema": {
-					"type": "object",
-					"$ref": "#/components/schemas/LoginModel"
-				}
-			}],
 			"post": {
 				"description": "Authenticate With Service",
+				"summary": "Authenticate With Service",
+				"requestBody": {
+					"description": "Login model",
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"$ref": "#/components/schemas/LoginModel"
+							}
+						}
+					}
+				},				
 				"responses": {
 					"201": {
 						"description": "Created",
